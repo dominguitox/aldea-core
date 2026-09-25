@@ -8,6 +8,16 @@
 
 
 //Funciones Taller
+function aldea_extraer_id_imagen_pod($img_field)
+{
+    if (is_array($img_field) && isset($img_field['ID']))
+        return $img_field['ID'];
+    if (is_array($img_field) && !empty($img_field))
+        return $img_field[0]['ID'] ?? $img_field[0];
+    if (is_numeric($img_field))
+        return $img_field;
+    return false;
+}
 function imprimir_etiqueta_cupos($id_taller = null)
 {
     if (!$id_taller) {
@@ -34,5 +44,35 @@ function imprimir_etiqueta_cupos($id_taller = null)
         }
     }
 }
+function imprimir_horario($id_taller = null, $sufijo = '')
+{
+    if (!$id_taller) {
+        $id_taller = get_the_ID();
+    }
+    if (!$id_taller) {
+        return;
+    }
+    $dia = get_post_meta($id_taller, 'dia' . $sufijo, true);
+    $hora_inicio = get_post_meta($id_taller, 'hora_inicio' . $sufijo, true);
+    $hora_termino = get_post_meta($id_taller, 'hora_termino' . $sufijo, true);
 
-// Funciones
+    if (empty($dia) || empty($hora_inicio)) {
+        return;
+    }
+
+    $dia_limpio = htmlspecialchars($dia, ENT_QUOTES, 'UTF-8');
+    $inicio_formateado = htmlspecialchars(date('H:i', strtotime($hora_inicio)), ENT_QUOTES, 'UTF-8');
+
+    $html = '<li><strong>Horario:</strong> ' . $dia_limpio . ' ';
+
+    if (!empty($hora_termino)) {
+        $termino_formateado = htmlspecialchars(date('H:i', strtotime($hora_termino)), ENT_QUOTES, 'UTF-8');
+        $html .= 'de ' . $inicio_formateado . ' a ' . $termino_formateado;
+    } else {
+        $html .= 'a las ' . $inicio_formateado;
+    }
+    $html .= '</li>';
+    echo $html;
+}
+
+// Funciones evento
