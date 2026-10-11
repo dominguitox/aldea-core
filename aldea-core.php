@@ -101,9 +101,18 @@ function imprimir_galeria_rotatoria($id_objeto = null)
         if (!empty($urls_imagenes)):
             ?>
             <div id="contenedor-carrusel-<?php the_ID(); ?>"
+<<<<<<< Updated upstream
                 style="position: relative; max-width: 600px; height: 300px; border-radius: 8px; overflow: hidden; background: #eaeaea;">
                 <img id="rotador-<?php the_ID(); ?>" src="<?php echo esc_url($urls_imagenes[0]); ?>"
                     style="width: 100%; height: 100%; object-fit: cover; transition: opacity 0.5s ease-in-out;">
+=======
+                style="position: relative; max-width: 600px; height: 420px; border-radius: 8px; overflow: hidden; background: #eaeaea;">
+
+                <?php foreach ($urls_imagenes as $index => $url): ?>
+                    <img class="rotador-img-<?php the_ID(); ?>" src="<?php echo esc_url($url); ?>"
+                        style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; transition: opacity 0.3s ease-in-out; opacity: <?php echo $index === 0 ? '1' : '0'; ?>; z-index: <?php echo $index === 0 ? '1' : '0'; ?>;">
+                <?php endforeach; ?>
+>>>>>>> Stashed changes
 
                 <?php if (count($urls_imagenes) > 1): ?>
                     <button id="btn-prev-<?php the_ID(); ?>"
