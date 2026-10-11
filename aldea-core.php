@@ -155,8 +155,12 @@ function imprimir_galeria_rotatoria($id_objeto = null)
             ?>
             <div id="contenedor-carrusel-<?php the_ID(); ?>"
                 style="position: relative; max-width: 600px; height: 420px; border-radius: 8px; overflow: hidden; background: #eaeaea;">
-                <img id="rotador-<?php the_ID(); ?>" src="<?php echo esc_url($urls_imagenes[0]); ?>"
-                    style="width: 100%; height: 100%; object-fit: contain; transition: opacity 0.5s ease-in-out;">
+                
+                <?php // Imprimimos TODAS las imágenes, ocultando todas menos la primera ?>
+                <?php foreach ($urls_imagenes as $index => $url): ?>
+                    <img class="rotador-img-<?php the_ID(); ?>" src="<?php echo esc_url($url); ?>"
+                        style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; transition: opacity 0.5s ease-in-out; opacity: <?php echo $index === 0 ? '1' : '0'; ?>; z-index: <?php echo $index === 0 ? '1' : '0'; ?>;">
+                <?php endforeach; ?>
 
                 <?php if (count($urls_imagenes) > 1): ?>
                     <button id="btn-prev-<?php the_ID(); ?>"
@@ -172,9 +176,13 @@ function imprimir_galeria_rotatoria($id_objeto = null)
                     const imagenes = document.querySelectorAll('.rotador-img-<?php the_ID(); ?>');
                     const btnPrev = document.getElementById('btn-prev-<?php the_ID(); ?>');
                     const btnNext = document.getElementById('btn-next-<?php the_ID(); ?>');
+                    
                     let actual = 0;
                     let total = imagenes.length;
                     let intervalo;
+
+                    // Si hay 1 sola imagen o menos, no hace falta script de rotación
+                    if (total < 2) return;
 
                     function cambiarImagen(siguiente) {
                         // Oculta la actual
@@ -196,31 +204,25 @@ function imprimir_galeria_rotatoria($id_objeto = null)
                         }, 6000);
                     }
 
-                    if (total > 1) {
+                    iniciarIntervalo();
+
+                    btnNext.addEventListener('click', () => {
+                        let siguiente = (actual + 1) % total;
+                        cambiarImagen(siguiente);
                         iniciarIntervalo();
+                    });
 
-                        btnNext.addEventListener('click', () => {
-                            let siguiente = (actual + 1) % total;
-                            cambiarImagen(siguiente);
-                            iniciarIntervalo();
-                        });
+                    btnPrev.addEventListener('click', () => {
+                        let siguiente = (actual - 1 + total) % total;
+                        cambiarImagen(siguiente);
+                        iniciarIntervalo();
+                    });
 
-                        btnPrev.addEventListener('click', () => {
-                            let siguiente = (actual - 1 + total) % total;
-                            cambiarImagen(siguiente);
-                            iniciarIntervalo();
-                        });
+                    // Detiene la rotación al poner el mouse encima
+                    contenedor.addEventListener('mouseenter', () => clearInterval(intervalo));
 
-                        // Detiene la rotación al poner el mouse encima
-                        contenedor.addEventListener('mouseenter', () => {
-                            clearInterval(intervalo);
-                        });
-
-                        // Reanuda la rotación al quitar el mouse
-                        contenedor.addEventListener('mouseleave', () => {
-                            iniciarIntervalo();
-                        });
-                    }
+                    // Reanuda la rotación al quitar el mouse
+                    contenedor.addEventListener('mouseleave', iniciarIntervalo);
                 });
             </script>
             <?php
