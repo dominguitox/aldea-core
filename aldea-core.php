@@ -154,7 +154,6 @@ function imprimir_galeria_rotatoria($id_objeto = null)
         if (!empty($urls_imagenes)):
             ?>
             <div id="contenedor-carrusel-<?php the_ID(); ?>"
-<<<<<<< Updated upstream
                 style="position: relative; max-width: 600px; height: 420px; border-radius: 8px; overflow: hidden; background: #eaeaea;">
                 <img id="rotador-<?php the_ID(); ?>" src="<?php echo esc_url($urls_imagenes[0]); ?>"
                     style="width: 100%; height: 100%; object-fit: contain; transition: opacity 0.5s ease-in-out;">
